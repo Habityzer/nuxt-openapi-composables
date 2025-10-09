@@ -1,0 +1,113 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Test API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/tasks": {
+      "get": {
+        "operationId": "getTasks",
+        "tags": ["Tasks"],
+        "responses": {
+          "200": {
+            "description": "Task collection",
+            "content": {
+              "application/ld+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createTask",
+        "tags": ["Tasks"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created"
+          }
+        }
+      }
+    },
+    "/api/tasks/{id}": {
+      "get": {
+        "operationId": "getTask",
+        "tags": ["Tasks"],
+        "responses": {
+          "200": {
+            "description": "Task item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateTask",
+        "tags": ["Tasks"],
+        "requestBody": {
+          "content": {
+            "application/merge-patch+json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteTask",
+        "tags": ["Tasks"],
+        "responses": {
+          "204": {
+            "description": "Task deleted"
+          }
+        }
+      }
+    },
+    "/api/goals": {
+      "get": {
+        "operationId": "getGoals",
+        "tags": ["Goals"],
+        "responses": {
+          "200": {
+            "description": "Goal collection"
+          }
+        }
+      }
+    },
+    "/api/habits/{id}/streak": {
+      "get": {
+        "operationId": "getHabitStreak",
+        "tags": ["Habits"],
+        "responses": {
+          "200": {
+            "description": "Habit streak"
+          }
+        }
+      }
+    }
+  }
+}
+
