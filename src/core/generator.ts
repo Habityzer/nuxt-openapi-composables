@@ -25,7 +25,9 @@ async function generateTypes(
       mkdirSync(outputDir, { recursive: true })
     }
 
-    writeFileSync(outputPath, output, 'utf-8')
+    // Convert output to string if it's not already
+    const outputString = typeof output === 'string' ? output : String(output)
+    writeFileSync(outputPath, outputString, 'utf-8')
     consola.success(`Generated TypeScript types at ${outputPath}`)
   } catch (error) {
     consola.error('Failed to generate TypeScript types:', error)

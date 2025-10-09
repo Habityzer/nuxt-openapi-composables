@@ -102,7 +102,7 @@ export function createUseApi(userConfig: UseApiConfig = {}) {
         }
 
         // Make the request using Nuxt's $fetch
-        return await $fetch<T>(url, fetchOptions)
+        return await ($fetch as any)(url, fetchOptions) as Promise<T>
       }
     }
 

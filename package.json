@@ -2,7 +2,7 @@
   "name": "nuxt-openapi-composables",
   "version": "0.1.0",
   "description": "Generate type-safe Nuxt composables from OpenAPI schemas",
-  "author": "Vaz",
+  "author": "Vazgen Manukyan",
   "license": "MIT",
   "type": "module",
   "exports": {
