@@ -85,7 +85,7 @@ export async function generateComposables(
 
     // Generate TypeScript types if requested
     if (config.generateTypes && config.typesOutputPath) {
-      consola.info('Generating TypeScript types...')
+      consola.start('Generating TypeScript types...')
       await generateTypes(config.schemaPath, config.typesOutputPath)
     }
 
@@ -106,7 +106,13 @@ export async function generateComposables(
 
     // Generate composables for each resource
     let generatedCount = 0
+    const totalResources = resources.size
+    let currentIndex = 0
+    
     for (const resource of resources) {
+      currentIndex++
+      consola.info(`[${currentIndex}/${totalResources}] Processing resource: ${resource}`)
+      
       const composable = generateComposable(
         resource,
         schema,
@@ -116,9 +122,13 @@ export async function generateComposables(
       if (composable) {
         const fileName = `use${toPascalCase(resource)}Api.ts`
         const filePath = join(config.outputDir, fileName)
+        
+        consola.info(`  └─ Writing ${fileName}...`)
         writeFileSync(filePath, composable, { flag: 'w' }) // Force overwrite
-        consola.success(`Generated ${fileName}`)
+        consola.success(`  ✓ Generated ${fileName}`)
         generatedCount++
+      } else {
+        consola.warn(`  └─ No composable generated for ${resource}`)
       }
     }
 

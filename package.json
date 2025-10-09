@@ -4,6 +4,14 @@
   "description": "Generate type-safe Nuxt composables from OpenAPI schemas",
   "author": "Vazgen Manukyan",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vazmanukyan/nuxt-openapi-composables.git"
+  },
+  "homepage": "https://github.com/vazmanukyan/nuxt-openapi-composables#readme",
+  "bugs": {
+    "url": "https://github.com/vazmanukyan/nuxt-openapi-composables/issues"
+  },
   "type": "module",
   "exports": {
     ".": {
