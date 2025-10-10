@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/nuxt-openapi-composables.svg)](https://npmjs.com/package/nuxt-openapi-composables)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Generate type-safe Nuxt 3 composables from OpenAPI schemas. Perfect for consuming REST APIs in your Nuxt applications with full TypeScript support and auto-completion.
+Generate type-safe Nuxt composables from OpenAPI schemas. Perfect for consuming REST APIs in your Nuxt 3 & 4 applications with full TypeScript support and auto-completion.
 
 ## Features
 

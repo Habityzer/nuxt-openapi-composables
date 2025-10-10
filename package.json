@@ -1,7 +1,7 @@
 {
   "name": "nuxt-openapi-composables",
   "version": "1.0.0",
-  "description": "Generate type-safe Nuxt composables from OpenAPI schemas",
+  "description": "Generate type-safe Nuxt 3 & 4 composables from OpenAPI schemas",
   "author": "Vazgen Manukyan",
   "license": "MIT",
   "repository": {
@@ -50,7 +50,7 @@
     "pathe": "^1.1.2"
   },
   "peerDependencies": {
-    "nuxt": "^3.0.0"
+    "nuxt": "^3.0.0 || ^4.0.0"
   },
   "peerDependenciesMeta": {
     "nuxt": {
@@ -74,6 +74,7 @@
   "keywords": [
     "nuxt",
     "nuxt3",
+    "nuxt4",
     "openapi",
     "composables",
     "api",
