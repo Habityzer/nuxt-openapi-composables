@@ -414,7 +414,7 @@ MIT License - see LICENSE file for details
 
 ## Credits
 
-Created by [Vaz](https://github.com/yourusername)
+Created by [Vazgen Manukyan](https://github.com/vazgen)
 
 ## Related Projects
 
