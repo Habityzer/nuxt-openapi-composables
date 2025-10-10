@@ -6,11 +6,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vazmanukyan/nuxt-openapi-composables.git"
+    "url": "git+https://github.com/Habityzer/nuxt-openapi-composables.git"
   },
-  "homepage": "https://github.com/vazmanukyan/nuxt-openapi-composables#readme",
+  "homepage": "https://github.com/Habityzer/nuxt-openapi-composables#readme",
   "bugs": {
-    "url": "https://github.com/vazmanukyan/nuxt-openapi-composables/issues"
+    "url": "https://github.com/Habityzer/nuxt-openapi-composables/issues"
   },
   "type": "module",
   "exports": {
