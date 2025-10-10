@@ -7,12 +7,16 @@ pnpm release
 ```
 
 This automatically:
-1. Analyzes your commits
-2. Calculates version bump
-3. Updates CHANGELOG.md
-4. Creates git tag
-5. Publishes to npm
-6. Creates GitHub release
+1. Builds the project
+2. Runs tests
+3. Analyzes your commits
+4. Calculates version bump
+5. Updates CHANGELOG.md
+6. Updates package.json
+7. Commits changes
+8. Creates git tag
+9. Pushes to GitHub
+10. Publishes to npm
 
 ## Commit Message Format
 
@@ -58,17 +62,15 @@ npm login
 ## Test Before Releasing
 
 ```bash
-npx semantic-release --dry-run --no-ci
+npx semantic-release --dry-run
 ```
-
-Note: You may see GitHub auth errors in dry-run mode locally - this is normal and won't affect actual releases.
 
 ## Environment Setup
 
 Before releasing, ensure:
 - You're logged in to npm: `npm login`
 - You have push access to the repository
-- Your git remote uses SSH (recommended) or you have GitHub token set
+- Your working directory is clean: `git status`
 
 See `RELEASING.md` for complete documentation.
 
