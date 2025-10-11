@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-openapi-composables",
+  "name": "@habityzer/nuxt-openapi-composables",
   "version": "1.0.1",
   "description": "Generate type-safe Nuxt 3 & 4 composables from OpenAPI schemas",
   "author": "Vazgen Manukyan",
@@ -26,7 +26,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "nuxt-openapi-composables": "./dist/cli/index.js"
+    "nuxt-openapi-composables": "./dist/cli/index.js",
+    "habityzer-openapi": "./dist/cli/index.js"
   },
   "files": [
     "dist",

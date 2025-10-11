@@ -1,6 +1,6 @@
 # Nuxt OpenAPI Composables
 
-[![npm version](https://img.shields.io/npm/v/nuxt-openapi-composables.svg)](https://npmjs.com/package/nuxt-openapi-composables)
+[![npm version](https://img.shields.io/npm/v/@habityzer/nuxt-openapi-composables.svg)](https://npmjs.com/package/@habityzer/nuxt-openapi-composables)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Generate type-safe Nuxt composables from OpenAPI schemas. Perfect for consuming REST APIs in your Nuxt 3 & 4 applications with full TypeScript support and auto-completion.
@@ -19,13 +19,13 @@ Generate type-safe Nuxt composables from OpenAPI schemas. Perfect for consuming 
 
 ```bash
 # Using pnpm (recommended)
-pnpm add -D nuxt-openapi-composables
+pnpm add -D @habityzer/nuxt-openapi-composables
 
 # Using npm
-npm install -D nuxt-openapi-composables
+npm install -D @habityzer/nuxt-openapi-composables
 
 # Using yarn
-yarn add -D nuxt-openapi-composables
+yarn add -D @habityzer/nuxt-openapi-composables
 ```
 
 ## Quick Start
@@ -77,10 +77,10 @@ await createTasksItemApi({
 Create `composables/useApi.ts`:
 
 ```typescript
-import { createUseApi } from 'nuxt-openapi-composables/runtime'
+import { createUseApi } from '@habityzer/nuxt-openapi-composables/runtime'
 
 // Option 1: Use default configuration
-export { useApi } from 'nuxt-openapi-composables/runtime'
+export { useApi } from '@habityzer/nuxt-openapi-composables/runtime'
 
 // Option 2: Customize configuration
 export const useApi = createUseApi({
@@ -182,7 +182,7 @@ await patchTasksItemApi({
 
 ```typescript
 // composables/useApi.ts
-import { createUseApi } from 'nuxt-openapi-composables/runtime'
+import { createUseApi } from '@habityzer/nuxt-openapi-composables/runtime'
 
 export const useApi = createUseApi({
   // Cookie name for auth token
@@ -223,7 +223,7 @@ You can also use as a Nuxt module for auto-import support:
 ```typescript
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['nuxt-openapi-composables'],
+  modules: ['@habityzer/nuxt-openapi-composables'],
   
   openapiComposables: {
     schemaPath: './schema/api.json',

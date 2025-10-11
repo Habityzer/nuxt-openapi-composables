@@ -1,4 +1,4 @@
-# Publishing Guide: nuxt-openapi-composables
+# Publishing Guide: @habityzer/nuxt-openapi-composables
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ gh repo create nuxt-openapi-composables --public --source=. --remote=origin
 # 1. Go to https://github.com/new
 # 2. Create repository named: nuxt-openapi-composables
 # 3. Then run:
-git remote add origin https://github.com/vazmanukyan/nuxt-openapi-composables.git
+git remote add origin https://github.com/Habityzer/nuxt-openapi-composables.git
 git branch -M main
 git push -u origin main
 ```
@@ -73,13 +73,13 @@ npm publish
 
 ```bash
 # Check on npm
-open https://www.npmjs.com/package/nuxt-openapi-composables
+open https://www.npmjs.com/package/@habityzer/nuxt-openapi-composables
 
 # Try installing in a test project
 mkdir /tmp/test-install
 cd /tmp/test-install
 npm init -y
-npm install nuxt-openapi-composables
+npm install @habityzer/nuxt-openapi-composables
 npx nuxt-openapi-composables --help
 ```
 
@@ -132,10 +132,10 @@ Once published:
 cd /Users/vaz/Sites/habityzer/habityzer-nuxt
 
 # Remove local version
-pnpm remove nuxt-openapi-composables
+pnpm remove @habityzer/nuxt-openapi-composables
 
 # Install from npm
-pnpm add -D nuxt-openapi-composables
+pnpm add -D @habityzer/nuxt-openapi-composables
 
 # Test it works
 pnpm generate:api
@@ -184,15 +184,15 @@ git push --tags
 
 ### Package Name Already Exists
 
-If `nuxt-openapi-composables` is taken, try:
-- `@vazmanukyan/nuxt-openapi-composables` (scoped package)
-- `nuxt-openapi-generator`
-- `nuxt3-openapi-composables`
+If `@habityzer/nuxt-openapi-composables` is taken, try:
+- `@habityzer/nuxt-openapi-generator`
+- `@habityzer/nuxt-api-composables`
+- Or use a different organization scope
 
 Update in `package.json`:
 ```json
 {
-  "name": "@vazmanukyan/nuxt-openapi-composables"
+  "name": "@habityzer/nuxt-openapi-composables"
 }
 ```
 
@@ -224,10 +224,10 @@ pnpm build
 # Create a tarball
 npm pack
 
-# This creates nuxt-openapi-composables-0.1.0.tgz
+# This creates habityzer-nuxt-openapi-composables-0.1.0.tgz
 # Install it in another project to test:
 cd /path/to/test-project
-npm install /path/to/nuxt-openapi-composables-0.1.0.tgz
+npm install /path/to/habityzer-nuxt-openapi-composables-0.1.0.tgz
 ```
 
 ## Checklist Before Publishing
@@ -250,8 +250,8 @@ npm install /path/to/nuxt-openapi-composables-0.1.0.tgz
 
 2. **Add npm Badge to README:**
    ```markdown
-   [![npm version](https://img.shields.io/npm/v/nuxt-openapi-composables.svg)](https://www.npmjs.com/package/nuxt-openapi-composables)
-   [![npm downloads](https://img.shields.io/npm/dm/nuxt-openapi-composables.svg)](https://www.npmjs.com/package/nuxt-openapi-composables)
+   [![npm version](https://img.shields.io/npm/v/@habityzer/nuxt-openapi-composables.svg)](https://www.npmjs.com/package/@habityzer/nuxt-openapi-composables)
+   [![npm downloads](https://img.shields.io/npm/dm/@habityzer/nuxt-openapi-composables.svg)](https://www.npmjs.com/package/@habityzer/nuxt-openapi-composables)
    ```
 
 3. **Announce:**

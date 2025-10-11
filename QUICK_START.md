@@ -5,13 +5,13 @@
 ### 1. Install
 
 ```bash
-pnpm add -D nuxt-openapi-composables
+pnpm add -D @habityzer/nuxt-openapi-composables
 ```
 
 ### 2. Create `composables/useApi.ts`
 
 ```typescript
-import { createUseApi } from 'nuxt-openapi-composables/runtime'
+import { createUseApi } from '@habityzer/nuxt-openapi-composables/runtime'
 
 export const useApi = createUseApi({
   cookieName: 'authToken',  // Your auth cookie name
