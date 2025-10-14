@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.1.0...v1.2.0) (2025-10-14)
+
+
+### Features
+
+* enhance method name generation and update tests! ([c4885cb](https://github.com/Habityzer/nuxt-openapi-composables/commit/c4885cbdb3f2dd66e7eb2fbe0d74d59ad246dc24))
+
 # [1.1.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.0.2...v1.1.0) (2025-10-14)
 
 

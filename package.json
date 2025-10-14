@@ -1,6 +1,6 @@
 {
   "name": "@habityzer/nuxt-openapi-composables",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Generate type-safe Nuxt 3 & 4 composables from OpenAPI schemas",
   "author": "Vazgen Manukyan",
   "license": "MIT",
