@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.0.2...v1.1.0) (2025-10-14)
+
+
+### Features
+
+* enhance type generation by parsing OpenAPI schema ([09150c9](https://github.com/Habityzer/nuxt-openapi-composables/commit/09150c9bfe58754273cd6527bf41c35cf732dc47))
+
 ## [1.0.1](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.0.0...v1.0.1) (2025-10-11)
 
 # 1.0.0 (2025-10-10)
