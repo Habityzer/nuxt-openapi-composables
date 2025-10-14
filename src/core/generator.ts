@@ -15,7 +15,13 @@ async function generateTypes(
 ): Promise<void> {
   try {
     const openapiTS = await import('openapi-typescript')
-    const output = await openapiTS.default(schemaPath, {
+    
+    // Read and parse the schema first to handle OpenAPI 3.1
+    const schemaContent = readFileSync(schemaPath, 'utf-8')
+    const schema = JSON.parse(schemaContent)
+    
+    // Generate types directly from the parsed schema object
+    const output = await openapiTS.default(schema, {
       defaultNonNullable: false
     })
 
