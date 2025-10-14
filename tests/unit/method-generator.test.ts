@@ -74,11 +74,11 @@ describe('Method Generator', () => {
       const schema = createMockSchema()
       const result = generateComposable('tasks', schema)
 
-      expect(result).toContain('getTasksCollectionApi')
-      expect(result).toContain('createTasksItemApi')
-      expect(result).toContain('getTasksItemApi')
-      expect(result).toContain('patchTasksItemApi')
-      expect(result).toContain('deleteTasksItemApi')
+      expect(result).toContain('getTasks')
+      expect(result).toContain('postTasks')
+      expect(result).toContain('getTask')
+      expect(result).toContain('patchTask')
+      expect(result).toContain('deleteTask')
     })
 
     it('includes correct paths and methods', () => {
@@ -106,11 +106,11 @@ describe('Method Generator', () => {
       const result = generateComposable('tasks', schema)
 
       expect(result).toContain('return {')
-      expect(result).toMatch(/return\s*\{[\s\S]*getTasksCollectionApi/)
-      expect(result).toMatch(/return\s*\{[\s\S]*createTasksItemApi/)
-      expect(result).toMatch(/return\s*\{[\s\S]*getTasksItemApi/)
-      expect(result).toMatch(/return\s*\{[\s\S]*patchTasksItemApi/)
-      expect(result).toMatch(/return\s*\{[\s\S]*deleteTasksItemApi/)
+      expect(result).toMatch(/return\s*\{[\s\S]*getTasks/)
+      expect(result).toMatch(/return\s*\{[\s\S]*postTasks/)
+      expect(result).toMatch(/return\s*\{[\s\S]*getTask/)
+      expect(result).toMatch(/return\s*\{[\s\S]*patchTask/)
+      expect(result).toMatch(/return\s*\{[\s\S]*deleteTask/)
     })
 
     it('uses custom useApi import path when provided', () => {
@@ -135,11 +135,11 @@ describe('Method Generator', () => {
 
       expect(methods).toHaveLength(5)
       expect(methods.map(m => m.name)).toEqual([
-        'getTasksCollectionApi',
-        'createTasksItemApi',
-        'getTasksItemApi',
-        'patchTasksItemApi',
-        'deleteTasksItemApi'
+        'getTasks',
+        'postTasks',
+        'getTask',
+        'patchTask',
+        'deleteTask'
       ])
     })
 
@@ -147,17 +147,17 @@ describe('Method Generator', () => {
       const schema = createMockSchema()
       const methods = getGeneratedMethods('tasks', schema)
 
-      const getCollection = methods.find(m => m.name === 'getTasksCollectionApi')
+      const getCollection = methods.find(m => m.name === 'getTasks')
       expect(getCollection).toEqual({
-        name: 'getTasksCollectionApi',
+        name: 'getTasks',
         path: '/api/tasks',
         httpMethod: 'get',
         contentType: 'application/json'
       })
 
-      const patchItem = methods.find(m => m.name === 'patchTasksItemApi')
+      const patchItem = methods.find(m => m.name === 'patchTask')
       expect(patchItem).toEqual({
-        name: 'patchTasksItemApi',
+        name: 'patchTask',
         path: '/api/tasks/{id}',
         httpMethod: 'patch',
         contentType: 'application/merge-patch+json'

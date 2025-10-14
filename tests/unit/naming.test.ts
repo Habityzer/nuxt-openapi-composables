@@ -115,29 +115,29 @@ describe('Naming Utilities', () => {
     describe('collection endpoints', () => {
       it('generates correct name for GET collection', () => {
         const schema = createMockSchema('/api/tasks')
-        expect(generateMethodName('/api/tasks', 'get', schema)).toBe('getTasksCollectionApi')
+        expect(generateMethodName('/api/tasks', 'get', schema)).toBe('getTasks')
       })
 
       it('generates correct name for POST collection', () => {
         const schema = createMockSchema('/api/tasks')
-        expect(generateMethodName('/api/tasks', 'post', schema)).toBe('createTasksItemApi')
+        expect(generateMethodName('/api/tasks', 'post', schema)).toBe('postTasks')
       })
     })
 
     describe('single item endpoints', () => {
       it('generates correct name for GET item', () => {
         const schema = createMockSchema('/api/tasks/{id}')
-        expect(generateMethodName('/api/tasks/{id}', 'get', schema)).toBe('getTasksItemApi')
+        expect(generateMethodName('/api/tasks/{id}', 'get', schema)).toBe('getTask')
       })
 
       it('generates correct name for PATCH item', () => {
         const schema = createMockSchema('/api/tasks/{id}')
-        expect(generateMethodName('/api/tasks/{id}', 'patch', schema)).toBe('patchTasksItemApi')
+        expect(generateMethodName('/api/tasks/{id}', 'patch', schema)).toBe('patchTask')
       })
 
       it('generates correct name for DELETE item', () => {
         const schema = createMockSchema('/api/tasks/{id}')
-        expect(generateMethodName('/api/tasks/{id}', 'delete', schema)).toBe('deleteTasksItemApi')
+        expect(generateMethodName('/api/tasks/{id}', 'delete', schema)).toBe('deleteTask')
       })
     })
 
@@ -145,7 +145,7 @@ describe('Naming Utilities', () => {
       it('generates correct name for custom parameter', () => {
         const schema = createMockSchema('/api/tasks/{entityType}')
         expect(generateMethodName('/api/tasks/{entityType}', 'get', schema)).toBe(
-          'getTasksItemByEntityTypeApi'
+          'getTasksByEntityType'
         )
       })
     })
@@ -154,7 +154,7 @@ describe('Naming Utilities', () => {
       it('generates correct name for action endpoints', () => {
         const schema = createMockSchema('/api/habits/{id}/streak')
         expect(generateMethodName('/api/habits/{id}/streak', 'get', schema)).toBe(
-          'streakHabitsApi'
+          'getHabitStreak'
         )
       })
     })
@@ -163,14 +163,14 @@ describe('Naming Utilities', () => {
       it('handles kebab-case resource names', () => {
         const schema = createMockSchema('/api/habit-entries')
         expect(generateMethodName('/api/habit-entries', 'get', schema)).toBe(
-          'getHabitEntriesCollectionApi'
+          'getHabitEntries'
         )
       })
 
       it('handles snake_case resource names', () => {
         const schema = createMockSchema('/api/user_limits')
         expect(generateMethodName('/api/user_limits', 'get', schema)).toBe(
-          'getUserLimitsCollectionApi'
+          'getUserLimits'
         )
       })
     })

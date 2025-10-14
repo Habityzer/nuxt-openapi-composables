@@ -58,11 +58,11 @@ describe('Full Generation Integration', () => {
     expect(tasksContent).toContain('export const useTasksApi')
 
     // Check method names
-    expect(tasksContent).toContain('getTasksCollectionApi')
-    expect(tasksContent).toContain('createTasksItemApi')
-    expect(tasksContent).toContain('getTasksItemApi')
-    expect(tasksContent).toContain('patchTasksItemApi')
-    expect(tasksContent).toContain('deleteTasksItemApi')
+    expect(tasksContent).toContain('getTasks')
+    expect(tasksContent).toContain('postTasks')
+    expect(tasksContent).toContain('getTask')
+    expect(tasksContent).toContain('patchTask')
+    expect(tasksContent).toContain('deleteTask')
 
     // Check paths
     expect(tasksContent).toContain("path: '/api/tasks'")
@@ -100,7 +100,7 @@ describe('Full Generation Integration', () => {
     await generateComposables(config)
 
     const habitsContent = readFileSync(join(outputDir, 'useHabitsApi.ts'), 'utf-8')
-    expect(habitsContent).toContain('streakHabitsApi')
+    expect(habitsContent).toContain('getHabitStreak')
     expect(habitsContent).toContain("path: '/api/habits/{id}/streak'")
   })
 

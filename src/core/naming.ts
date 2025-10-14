@@ -61,13 +61,31 @@ export function getResourceName(path: string, schema: OpenAPISchema): string {
 }
 
 /**
+ * Convert resource name to singular form (basic implementation)
+ */
+function toSingular(str: string): string {
+  // Handle common patterns
+  if (str.endsWith('ies')) {
+    return str.slice(0, -3) + 'y' // entries -> entry
+  }
+  if (str.endsWith('sses')) {
+    return str.slice(0, -2) // classes -> class
+  }
+  if (str.endsWith('s') && !str.endsWith('ss')) {
+    return str.slice(0, -1) // users -> user
+  }
+  return str
+}
+
+/**
  * Generate descriptive method name for an API endpoint
  * Examples:
- * - GET /api/tasks -> getTasksCollectionApi
- * - POST /api/tasks -> createTasksItemApi
- * - GET /api/tasks/{id} -> getTasksItemApi
- * - PATCH /api/tasks/{id} -> patchTasksItemApi
- * - DELETE /api/tasks/{id} -> deleteTasksItemApi
+ * - GET /api/user-words/user-words -> getUserWords
+ * - POST /api/user-words/batch -> postUserWordsBatch
+ * - GET /api/user-words/random -> getRandomUserWords
+ * - GET /api/user-words/user-words/{id} -> getUserWord
+ * - DELETE /api/user-words/user-words/{id} -> deleteUserWord
+ * - GET /api/habits/{id}/streak -> getHabitStreak
  */
 export function generateMethodName(
   path: string,
@@ -77,50 +95,74 @@ export function generateMethodName(
   const resourceName = getResourceName(path, schema)
   if (!resourceName) return method
 
-  // Extract action from path if it exists (e.g., /api/resource/{id}/action)
-  // But ignore path parameters (things in curly braces)
-  const actionMatch = path.match(/\/api\/[^/]+\/[^/]+\/([^/]+)$/)
-  if (actionMatch && !actionMatch[1].includes('{')) {
-    const action = actionMatch[1]
-    return `${action}${toPascalCase(resourceName)}Api`
-  }
-
-  // Handle paths with custom parameters (not just {id})
-  const hasPathParams = path.includes('{')
-  const isStandardIdPath = path.includes('{id}')
-  const isCollection = !hasPathParams // Collection if no path parameters at all
-
   const baseName = toPascalCase(resourceName)
-
-  // Handle collection endpoints (without any path parameters)
-  if (isCollection) {
-    if (method === 'get') return `get${baseName}CollectionApi` // Explicit: getTasksCollectionApi
-    if (method === 'post') return `create${baseName}ItemApi` // Explicit: createTasksItemApi
+  
+  // Split the path into segments
+  const pathSegments = path.split('/').filter(seg => seg && seg !== 'api')
+  
+  // Check if path has parameters
+  const hasPathParams = path.includes('{')
+  const hasIdParam = path.includes('{id}')
+  
+  // Find path modifiers (segments after the base resource that aren't parameters)
+  // For example: /api/user-words/batch -> 'batch' is the modifier
+  // /api/user-words/random -> 'random' is the modifier
+  // /api/habits/{id}/streak -> 'streak' is the modifier (action after ID)
+  const baseResourceSegment = pathSegments[0] // e.g., 'user-words'
+  const pathModifiers: string[] = []
+  
+  for (let i = 1; i < pathSegments.length; i++) {
+    const segment = pathSegments[i]
+    // Skip if it's a parameter or if it's the same as the base resource
+    if (!segment.includes('{') && segment !== baseResourceSegment) {
+      pathModifiers.push(segment)
+    }
   }
-
-  // Handle single resource endpoints (with {id})
-  if (isStandardIdPath) {
-    if (method === 'get') return `get${baseName}ItemApi` // Explicit: getTasksItemApi
-    if (method === 'patch') return `patch${baseName}ItemApi` // Explicit: patchTasksItemApi
-    if (method === 'delete') return `delete${baseName}ItemApi` // Explicit: deleteTasksItemApi
+  
+  // Handle endpoints with {id} parameter (single resource operations)
+  // Check if there are modifiers after the {id} (like /api/habits/{id}/streak)
+  if (hasIdParam) {
+    const singularName = toSingular(baseName)
+    
+    // If there are modifiers after {id}, it's an action on the resource
+    if (pathModifiers.length > 0) {
+      const modifierPascal = pathModifiers.map(m => toPascalCase(m)).join('')
+      return `${method}${singularName}${modifierPascal}`
+    }
+    
+    // Otherwise, it's a standard single resource operation
+    return `${method}${singularName}`
   }
-
-  // Handle endpoints with custom path parameters (like {entityType})
-  if (hasPathParams && !isStandardIdPath) {
+  
+  // Handle endpoints with custom parameters (not {id})
+  if (hasPathParams) {
     // Extract the parameter name from the path
     const paramMatch = path.match(/\{([^}]+)\}/)
     if (paramMatch) {
       const paramName = paramMatch[1]
       const paramNamePascal = toPascalCase(paramName)
-
-      if (method === 'get') return `get${baseName}ItemBy${paramNamePascal}Api`
-      if (method === 'post') return `create${baseName}ItemBy${paramNamePascal}Api`
-      if (method === 'patch') return `patch${baseName}ItemBy${paramNamePascal}Api`
-      if (method === 'delete') return `delete${baseName}ItemBy${paramNamePascal}Api`
+      return `${method}${baseName}By${paramNamePascal}`
     }
   }
-
-  return `${method}${baseName}Api`
+  
+  // Handle endpoints with path modifiers (like /batch, /random)
+  if (pathModifiers.length > 0) {
+    const modifierPascal = pathModifiers.map(m => toPascalCase(m)).join('')
+    
+    // For GET requests with modifiers, you can put modifier first or last
+    // e.g., getRandomUserWords or getUserWordsRandom
+    // Let's use: get + Modifier + ResourceName pattern for GET
+    // and: method + ResourceName + Modifier for others
+    if (method === 'get') {
+      return `${method}${modifierPascal}${baseName}`
+    } else {
+      return `${method}${baseName}${modifierPascal}`
+    }
+  }
+  
+  // Handle collection endpoints (no params, no modifiers)
+  // These are base resource endpoints
+  return `${method}${baseName}`
 }
 
 /**

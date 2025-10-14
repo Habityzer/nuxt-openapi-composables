@@ -9,4 +9,5 @@ coverage/
 *.swo
 .env
 .env.local
+api.json
 
