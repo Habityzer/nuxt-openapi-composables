@@ -59,6 +59,84 @@ function validateSchema(schema: OpenAPISchema): void {
 }
 
 /**
+ * Copy useOpenApi.ts to output directory with correct types path and optional default prefix
+ */
+function copyUseOpenApi(
+  outputDir: string,
+  typesImportPath?: string,
+  defaultApiPrefix?: string
+): void {
+  try {
+    // Try to read from dist/templates (when running from built package)
+    // or from templates/ (when running from source during tests)
+    let sourceFile = join(__dirname, '../templates/useOpenApi.ts')
+    if (!existsSync(sourceFile)) {
+      sourceFile = join(__dirname, '../../templates/useOpenApi.ts')
+    }
+    
+    let content = readFileSync(sourceFile, 'utf-8')
+    
+    // Replace the types import path if provided
+    if (typesImportPath) {
+      content = content.replace(
+        /import type { paths } from '~\/types\/api'/,
+        `import type { paths } from '${typesImportPath}'`
+      )
+    }
+    
+    // Replace the default API prefix if provided
+    if (defaultApiPrefix !== undefined) {
+      content = content.replace(
+        /return config\.public\.apiPrefix \|\| ''/,
+        `return config.public.apiPrefix || '${defaultApiPrefix}'`
+      )
+    }
+    
+    // Add configuration comment at the top
+    const configComment = `/**
+ * API Configuration:
+ * 
+ * To configure the API prefix in your Nuxt project, add this to your nuxt.config.ts:
+ * 
+ * export default defineNuxtConfig({
+ *   runtimeConfig: {
+ *     public: {
+ *       apiPrefix: '/api/symfony' // or your custom prefix
+ *     }
+ *   }
+ * })
+ * 
+ * Or use environment variable: NUXT_PUBLIC_API_PREFIX=/api/symfony
+ * 
+ * If not configured, defaults to: '${defaultApiPrefix || ''}'
+ * 
+ * Error Handling:
+ * All API errors are thrown and can be caught by your application.
+ * Errors include statusCode and statusMessage properties.
+ * 
+ * Example:
+ * try {
+ *   await getUserWords()
+ * } catch (error) {
+ *   if (error.statusCode === 401) {
+ *     // Handle authentication error (redirect to login, etc.)
+ *   }
+ * }
+ */
+
+`
+    content = configComment + content
+    
+    // Write to output directory
+    const outputPath = join(outputDir, 'useOpenApi.ts')
+    writeFileSync(outputPath, content, 'utf-8')
+    consola.success('✓ useOpenApi.ts')
+  } catch (error) {
+    consola.warn('✗ Failed to copy useOpenApi.ts:', error)
+  }
+}
+
+/**
  * Main function to generate composables from OpenAPI schema
  */
 export async function generateComposables(
@@ -110,6 +188,9 @@ export async function generateComposables(
       consola.info(`Created output directory: ${config.outputDir}`)
     }
 
+    // Copy useOpenApi.ts to output directory
+    copyUseOpenApi(config.outputDir, config.typesImportPath, config.apiPrefix)
+
     // Generate composables for each resource
     let generatedCount = 0
     const totalResources = resources.size
@@ -117,7 +198,6 @@ export async function generateComposables(
     
     for (const resource of resources) {
       currentIndex++
-      consola.info(`[${currentIndex}/${totalResources}] Processing resource: ${resource}`)
       
       const composable = generateComposable(
         resource,
@@ -129,12 +209,11 @@ export async function generateComposables(
         const fileName = `use${toPascalCase(resource)}Api.ts`
         const filePath = join(config.outputDir, fileName)
         
-        consola.info(`  └─ Writing ${fileName}...`)
         writeFileSync(filePath, composable, { flag: 'w' }) // Force overwrite
-        consola.success(`  ✓ Generated ${fileName}`)
+        consola.success(`[${currentIndex}/${totalResources}] ✓ ${fileName}`)
         generatedCount++
       } else {
-        consola.warn(`  └─ No composable generated for ${resource}`)
+        consola.warn(`[${currentIndex}/${totalResources}] ✗ No composable generated for ${resource}`)
       }
     }
 

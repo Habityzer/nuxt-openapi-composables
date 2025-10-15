@@ -52,17 +52,17 @@ describe('Full Generation Integration', () => {
     const tasksContent = readFileSync(join(outputDir, 'useTasksApi.ts'), 'utf-8')
 
     // Check imports
-    expect(tasksContent).toContain("import { useApi } from '~/composables/useApi'")
+    expect(tasksContent).toContain("import { useOpenApi } from './useOpenApi'")
 
     // Check composable name
     expect(tasksContent).toContain('export const useTasksApi')
 
     // Check method names
-    expect(tasksContent).toContain('getTasks')
-    expect(tasksContent).toContain('postTasks')
-    expect(tasksContent).toContain('getTask')
-    expect(tasksContent).toContain('patchTask')
-    expect(tasksContent).toContain('deleteTask')
+    expect(tasksContent).toContain('getTasksApi')
+    expect(tasksContent).toContain('postTasksApi')
+    expect(tasksContent).toContain('getTaskApi')
+    expect(tasksContent).toContain('patchTaskApi')
+    expect(tasksContent).toContain('deleteTaskApi')
 
     // Check paths
     expect(tasksContent).toContain("path: '/api/tasks'")
@@ -75,19 +75,20 @@ describe('Full Generation Integration', () => {
     expect(tasksContent).toContain("method: 'delete'")
   })
 
-  it('generates composable with custom useApi import path', async () => {
-    const customOutputDir = join(tempDir, 'custom-composables')
+  it('copies useOpenApi.ts to output directory', async () => {
     const config: GeneratorConfig = {
       schemaPath,
-      outputDir: customOutputDir,
-      useApiImportPath: '#app/composables/useApi',
+      outputDir,
       generateTypes: false
     }
 
     await generateComposables(config)
 
-    const tasksContent = readFileSync(join(customOutputDir, 'useTasksApi.ts'), 'utf-8')
-    expect(tasksContent).toContain("import { useApi } from '#app/composables/useApi'")
+    // Check that useOpenApi.ts was copied
+    expect(existsSync(join(outputDir, 'useOpenApi.ts'))).toBe(true)
+    
+    const useOpenApiContent = readFileSync(join(outputDir, 'useOpenApi.ts'), 'utf-8')
+    expect(useOpenApiContent).toContain('export const useOpenApi')
   })
 
   it('handles action endpoints correctly', async () => {
@@ -100,7 +101,7 @@ describe('Full Generation Integration', () => {
     await generateComposables(config)
 
     const habitsContent = readFileSync(join(outputDir, 'useHabitsApi.ts'), 'utf-8')
-    expect(habitsContent).toContain('getHabitStreak')
+    expect(habitsContent).toContain('getHabitStreakApi')
     expect(habitsContent).toContain("path: '/api/habits/{id}/streak'")
   })
 

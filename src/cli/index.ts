@@ -43,13 +43,22 @@ program
     './app/types/api.ts'
   )
   .option(
+    '--types-import <path>',
+    'Import path for types in useOpenApi.ts (e.g., ~/types/api)',
+    '~/types/api'
+  )
+  .option(
+    '--api-prefix <path>',
+    'Default API path prefix (e.g., /api/symfony). Can be overridden at runtime via NUXT_PUBLIC_API_PREFIX'
+  )
+  .option(
     '--base-api-path <path>',
-    'Base API path',
+    'Base API path (deprecated)',
     '/api'
   )
   .option(
     '--use-api-import <path>',
-    'Custom useApi import path (default: ~/composables/useApi)'
+    'Custom useApi import path (deprecated, use --types-import instead)'
   )
   .action(async (options) => {
     try {
@@ -74,7 +83,9 @@ program
         baseApiPath: options.baseApiPath,
         useApiImportPath: options.useApiImport,
         generateTypes: options.types,
-        typesOutputPath
+        typesOutputPath,
+        typesImportPath: options.typesImport,
+        apiPrefix: options.apiPrefix
       }
 
       // Display configuration
@@ -88,9 +99,12 @@ program
           config.generateTypes && typesOutputPath
             ? `Types Output: ${typesOutputPath}`
             : null,
-          config.useApiImportPath
-            ? `useApi Import: ${config.useApiImportPath}`
-            : null
+          config.typesImportPath
+            ? `Types Import: ${config.typesImportPath}`
+            : null,
+          config.apiPrefix
+            ? `API Prefix: ${config.apiPrefix}`
+            : 'API Prefix: (none - runtime configurable)'
         ]
           .filter(Boolean)
           .join('\n')

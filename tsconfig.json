@@ -19,7 +19,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "templates/useOpenApi.ts"  ],
   "exclude": [
     "node_modules",
     "dist",

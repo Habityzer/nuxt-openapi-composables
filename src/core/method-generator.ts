@@ -57,13 +57,10 @@ export function generateComposable(
   // Use resource name as-is from the API
   const composableName = toPascalCase(resourceName)
 
-  // Determine import path for useApi
-  const importPath = useApiImportPath || '~/composables/useApi'
-
-  return `import { useApi } from '${importPath}'
+  return `import { useOpenApi } from './useOpenApi'
 
 export const use${composableName}Api = () => {
-  const { createApiMethod } = useApi()
+  const { createApiMethod } = useOpenApi()
 
 ${methods}
 

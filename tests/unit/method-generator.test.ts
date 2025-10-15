@@ -65,20 +65,20 @@ describe('Method Generator', () => {
       const result = generateComposable('tasks', schema)
 
       expect(result).toBeTruthy()
-      expect(result).toContain("import { useApi } from '~/composables/useApi'")
+      expect(result).toContain("import { useOpenApi } from './useOpenApi'")
       expect(result).toContain('export const useTasksApi = () => {')
-      expect(result).toContain("const { createApiMethod } = useApi()")
+      expect(result).toContain("const { createApiMethod } = useOpenApi()")
     })
 
     it('generates correct method definitions', () => {
       const schema = createMockSchema()
       const result = generateComposable('tasks', schema)
 
-      expect(result).toContain('getTasks')
-      expect(result).toContain('postTasks')
-      expect(result).toContain('getTask')
-      expect(result).toContain('patchTask')
-      expect(result).toContain('deleteTask')
+      expect(result).toContain('getTasksApi')
+      expect(result).toContain('postTasksApi')
+      expect(result).toContain('getTaskApi')
+      expect(result).toContain('patchTaskApi')
+      expect(result).toContain('deleteTaskApi')
     })
 
     it('includes correct paths and methods', () => {
@@ -106,18 +106,18 @@ describe('Method Generator', () => {
       const result = generateComposable('tasks', schema)
 
       expect(result).toContain('return {')
-      expect(result).toMatch(/return\s*\{[\s\S]*getTasks/)
-      expect(result).toMatch(/return\s*\{[\s\S]*postTasks/)
-      expect(result).toMatch(/return\s*\{[\s\S]*getTask/)
-      expect(result).toMatch(/return\s*\{[\s\S]*patchTask/)
-      expect(result).toMatch(/return\s*\{[\s\S]*deleteTask/)
+      expect(result).toMatch(/return\s*\{[\s\S]*getTasksApi/)
+      expect(result).toMatch(/return\s*\{[\s\S]*postTasksApi/)
+      expect(result).toMatch(/return\s*\{[\s\S]*getTaskApi/)
+      expect(result).toMatch(/return\s*\{[\s\S]*patchTaskApi/)
+      expect(result).toMatch(/return\s*\{[\s\S]*deleteTaskApi/)
     })
 
-    it('uses custom useApi import path when provided', () => {
+    it('uses local useOpenApi import', () => {
       const schema = createMockSchema()
-      const result = generateComposable('tasks', schema, '#app/composables/useApi')
+      const result = generateComposable('tasks', schema)
 
-      expect(result).toContain("import { useApi } from '#app/composables/useApi'")
+      expect(result).toContain("import { useOpenApi } from './useOpenApi'")
     })
 
     it('returns empty string for non-existent resource', () => {
@@ -135,11 +135,11 @@ describe('Method Generator', () => {
 
       expect(methods).toHaveLength(5)
       expect(methods.map(m => m.name)).toEqual([
-        'getTasks',
-        'postTasks',
-        'getTask',
-        'patchTask',
-        'deleteTask'
+        'getTasksApi',
+        'postTasksApi',
+        'getTaskApi',
+        'patchTaskApi',
+        'deleteTaskApi'
       ])
     })
 
@@ -147,17 +147,17 @@ describe('Method Generator', () => {
       const schema = createMockSchema()
       const methods = getGeneratedMethods('tasks', schema)
 
-      const getCollection = methods.find(m => m.name === 'getTasks')
+      const getCollection = methods.find(m => m.name === 'getTasksApi')
       expect(getCollection).toEqual({
-        name: 'getTasks',
+        name: 'getTasksApi',
         path: '/api/tasks',
         httpMethod: 'get',
         contentType: 'application/json'
       })
 
-      const patchItem = methods.find(m => m.name === 'patchTask')
+      const patchItem = methods.find(m => m.name === 'patchTaskApi')
       expect(patchItem).toEqual({
-        name: 'patchTask',
+        name: 'patchTaskApi',
         path: '/api/tasks/{id}',
         httpMethod: 'patch',
         contentType: 'application/merge-patch+json'

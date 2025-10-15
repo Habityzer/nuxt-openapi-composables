@@ -30,7 +30,7 @@ yarn add -D @habityzer/nuxt-openapi-composables
 
 ## Quick Start
 
-### 1. CLI Usage (Recommended)
+### 1. Generate Composables
 
 Generate composables from your OpenAPI schema:
 
@@ -38,56 +38,68 @@ Generate composables from your OpenAPI schema:
 npx nuxt-openapi-composables generate \
   --schema ./schema/api.json \
   --output ./app/composables/api \
-  --cookie authToken \
-  --types
+  --types \
+  --types-import '~/types/api' \
+  --api-prefix '/api/symfony'
 ```
+
+This will generate:
+- `useOpenApi.ts` - Core API client composable
+- `use{Resource}Api.ts` - Resource-specific composables (e.g., `useUserWordsApi.ts`)
+- `api.ts` - TypeScript types (if `--types` flag is used)
 
 Add to your `package.json`:
 
 ```json
 {
   "scripts": {
-    "generate:api": "nuxt-openapi-composables generate -s ./schema/api.json -o ./app/composables/api --types"
+    "generate:api": "nuxt-openapi-composables generate -s ./schema/api.json -o ./composables/api --types"
   }
 }
 ```
 
-### 2. Use Generated Composables
+### 2. Configure Nuxt
+
+Add API prefix configuration to your `nuxt.config.ts`:
 
 ```typescript
-// pages/tasks.vue
+// nuxt.config.ts
+export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiPrefix: '/api/symfony' // Your API path prefix
+    }
+  }
+})
+```
+
+Or use environment variable:
+
+```bash
+# .env
+NUXT_PUBLIC_API_PREFIX=/api/symfony
+```
+
+### 3. Use Generated Composables
+
+```typescript
+// pages/user-words.vue
 <script setup lang="ts">
-const { getTasksCollectionApi, createTasksItemApi } = useTasksApi()
+const { getUserWordsApi, postUserWordsBatchApi } = useUserWordsApi()
 
-// Fetch all tasks
-const { data: tasks } = await getTasksCollectionApi()
+// Fetch all user words
+const { data: words } = await getUserWordsApi()
 
-// Create a new task
-await createTasksItemApi({
+// Create words in batch
+await postUserWordsBatchApi({
   body: {
-    title: 'New Task',
-    description: 'Task description'
+    words: [
+      { word: 'ephemeral', tags: ['Lesson 1'] },
+      { word: 'abandon', tags: ['Lesson 1'] }
+    ]
   }
 })
 </script>
-```
-
-### 3. Setup useApi Composable
-
-Create `composables/useApi.ts`:
-
-```typescript
-import { createUseApi } from '@habityzer/nuxt-openapi-composables/runtime'
-
-// Option 1: Use default configuration
-export { useApi } from '@habityzer/nuxt-openapi-composables/runtime'
-
-// Option 2: Customize configuration
-export const useApi = createUseApi({
-  cookieName: 'authToken',
-  baseURL: '/api',
-  getAuthHeader: (token) => `Bearer ${token}`
-})
 ```
 
 ## CLI Options
@@ -104,11 +116,11 @@ nuxt-openapi-composables generate [options]
 |--------|-------|-------------|---------|
 | `--schema <path>` | `-s` | Path to OpenAPI schema file | `./schema/api.json` |
 | `--output <dir>` | `-o` | Output directory for composables | `./app/composables/api` |
-| `--cookie <name>` | `-c` | Cookie name for authentication | `authToken` |
-| `--types` | `-t` | Generate TypeScript types | `false` |
+| `--types` | `-t` | Generate TypeScript types using openapi-typescript | `false` |
 | `--types-output <path>` | | Output path for TypeScript types | `./app/types/api.ts` |
-| `--base-api-path <path>` | | Base API path | `/api` |
-| `--use-api-import <path>` | | Custom useApi import path | `~/composables/useApi` |
+| `--types-import <path>` | | Import path for types in useOpenApi.ts | `~/types/api` |
+| `--api-prefix <path>` | | Default API path prefix (can be overridden at runtime) | _(none)_ |
+| `--cookie <name>` | `-c` | Cookie name for authentication (deprecated) | `authToken` |
 
 ### Examples
 
@@ -123,28 +135,63 @@ nuxt-openapi-composables generate \
   -s ./schema/api.json \
   -o ./composables/api \
   --types \
-  --types-output ./types/api.ts
+  --types-output ./types/api.ts \
+  --types-import '~/types/api'
 ```
 
-**Custom authentication cookie:**
+**With custom API prefix:**
 ```bash
 nuxt-openapi-composables generate \
   -s ./api.json \
-  --cookie myAuthToken
+  -o ./composables/api \
+  --api-prefix '/api/symfony'
+```
+
+**Complete example:**
+```bash
+nuxt-openapi-composables generate \
+  --schema ./openapi.json \
+  --output ./app/composables/api \
+  --types \
+  --types-output ./app/types/api.ts \
+  --types-import '~/types/api' \
+  --api-prefix '/api/v1'
 ```
 
 ## Generated Method Naming
 
-The generator creates intuitive method names based on REST conventions:
+The generator creates intuitive method names based on REST conventions with an "Api" suffix to distinguish from store methods:
 
 | Endpoint | HTTP Method | Generated Method Name |
 |----------|-------------|----------------------|
-| `/api/tasks` | GET | `getTasksCollectionApi` |
-| `/api/tasks` | POST | `createTasksItemApi` |
-| `/api/tasks/{id}` | GET | `getTasksItemApi` |
-| `/api/tasks/{id}` | PATCH | `patchTasksItemApi` |
-| `/api/tasks/{id}` | DELETE | `deleteTasksItemApi` |
-| `/api/tasks/{id}/complete` | POST | `completeTasksApi` |
+| `/api/tasks` | GET | `getTasksApi` |
+| `/api/tasks` | POST | `postTasksApi` |
+| `/api/tasks/{id}` | GET | `getTaskApi` (singular) |
+| `/api/tasks/{id}` | PATCH | `patchTaskApi` |
+| `/api/tasks/{id}` | DELETE | `deleteTaskApi` |
+| `/api/tasks/{id}/complete` | POST | `postTaskCompleteApi` |
+| `/api/user-words/batch` | POST | `postUserWordsBatchApi` |
+| `/api/user-words/random` | GET | `getRandomUserWordsApi` |
+
+**Why the "Api" suffix?**
+
+The `Api` suffix helps distinguish between API calls and Pinia store methods when working in stores:
+
+```typescript
+// In your Pinia store
+export const useUserWordsStore = defineStore('userWords', () => {
+  const { getUserWordsApi } = useUserWordsApi()  // API call
+  
+  const words = ref([])
+  
+  // Store action - no naming conflict!
+  async function getUserWords() {  
+    words.value = await getUserWordsApi()
+  }
+  
+  return { words, getUserWords }
+})
+```
 
 ### Method Parameters
 
@@ -161,59 +208,82 @@ interface ApiMethodParams {
 **Example usage:**
 
 ```typescript
-const { getTasksItemApi, patchTasksItemApi } = useTasksApi()
+const { getTaskApi, patchTaskApi } = useTasksApi()
 
 // GET /api/tasks/123
-const task = await getTasksItemApi({
+const task = await getTaskApi({
   params: { id: 123 }
 })
 
 // PATCH /api/tasks/123 with query params
-await patchTasksItemApi({
+await patchTaskApi({
   params: { id: 123 },
   body: { title: 'Updated' },
   query: { refresh: true }
 })
 ```
 
-## Advanced Configuration
+## Configuration
 
-### Custom useApi Configuration
+### API Prefix Configuration
 
+The generated `useOpenApi.ts` reads the API prefix from Nuxt's runtime config. Configure it in your project:
+
+**Option 1: nuxt.config.ts**
 ```typescript
-// composables/useApi.ts
-import { createUseApi } from '@habityzer/nuxt-openapi-composables/runtime'
-
-export const useApi = createUseApi({
-  // Cookie name for auth token
-  cookieName: 'myAuthToken',
-  
-  // Base URL for all requests
-  baseURL: '/api/v1',
-  
-  // Additional headers for all requests
-  headers: {
-    'X-Client-Version': '1.0.0'
-  },
-  
-  // Custom authorization header builder
-  getAuthHeader: (token) => `Bearer ${token}`
+export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiPrefix: '/api/symfony' // Your API prefix
+    }
+  }
 })
 ```
 
-### Custom Import Path
+**Option 2: Environment Variable**
+```bash
+# .env
+NUXT_PUBLIC_API_PREFIX=/api/symfony
+```
 
-If you have a custom useApi composable location:
+**Option 3: Set Default During Generation**
+```bash
+nuxt-openapi-composables generate \
+  --api-prefix '/api/symfony'
+```
+
+The priority is: Runtime Config > Environment Variable > CLI Default
+
+### Error Handling
+
+All API errors are thrown with `statusCode` and `statusMessage` properties. Handle them in your application:
+
+```typescript
+const { getUserWordsApi } = useUserWordsApi()
+
+try {
+  const words = await getUserWordsApi()
+} catch (error) {
+  if (error.statusCode === 401) {
+    // Handle authentication error
+    await navigateTo('/login')
+  } else if (error.statusCode === 404) {
+    // Handle not found
+    console.error('Resource not found')
+  } else {
+    // Handle other errors
+    console.error('API Error:', error.statusMessage)
+  }
+}
+```
+
+### Custom Types Import Path
+
+If your types are in a different location:
 
 ```bash
 nuxt-openapi-composables generate \
-  --use-api-import '#app/composables/api'
-```
-
-This will generate:
-
-```typescript
-import { useApi } from '#app/composables/api'
+  --types-import '@/types/api'
 ```
 
 ## Nuxt Module (Optional)
@@ -286,26 +356,26 @@ jobs:
 ```typescript
 // pages/tasks/index.vue
 <script setup lang="ts">
-const { getTasksCollectionApi } = useTasksApi()
+const { getTasksApi } = useTasksApi()
 
 const { data: tasks, refresh } = await useAsyncData(
   'tasks',
-  () => getTasksCollectionApi()
+  () => getTasksApi()
 )
 </script>
 
 // pages/tasks/[id].vue
 <script setup lang="ts">
 const route = useRoute()
-const { getTasksItemApi, deleteTasksItemApi } = useTasksApi()
+const { getTaskApi, deleteTaskApi } = useTasksApi()
 
 const { data: task } = await useAsyncData(
   'task',
-  () => getTasksItemApi({ params: { id: route.params.id } })
+  () => getTaskApi({ params: { id: route.params.id } })
 )
 
 async function deleteTask() {
-  await deleteTasksItemApi({ params: { id: route.params.id } })
+  await deleteTaskApi({ params: { id: route.params.id } })
   await navigateTo('/tasks')
 }
 </script>
@@ -314,10 +384,10 @@ async function deleteTask() {
 ### With Query Parameters
 
 ```typescript
-const { getTasksCollectionApi } = useTasksApi()
+const { getTasksApi } = useTasksApi()
 
 // GET /api/tasks?status=active&page=1
-const tasks = await getTasksCollectionApi({
+const tasks = await getTasksApi({
   query: {
     status: 'active',
     page: 1,
@@ -326,30 +396,47 @@ const tasks = await getTasksCollectionApi({
 })
 ```
 
-### Error Handling
+### With Pinia Stores
 
 ```typescript
-const { createTasksItemApi } = useTasksApi()
-
-try {
-  await createTasksItemApi({
-    body: { title: 'New Task' }
-  })
+// stores/tasks.ts
+export const useTasksStore = defineStore('tasks', () => {
+  const { getTasksApi, postTasksApi, deleteTaskApi } = useTasksApi()
   
-  // Show success toast
-} catch (error) {
-  console.error('Failed to create task:', error)
-  // Show error toast
-}
+  const tasks = ref([])
+  const loading = ref(false)
+  
+  async function fetchTasks() {
+    loading.value = true
+    try {
+      tasks.value = await getTasksApi()
+    } catch (error) {
+      console.error('Failed to fetch tasks:', error)
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  async function createTask(title: string) {
+    const task = await postTasksApi({ body: { title } })
+    tasks.value.push(task)
+    return task
+  }
+  
+  return { tasks, loading, fetchTasks, createTask }
+})
 ```
 
 ### With TypeScript Types
 
 ```typescript
 // Import generated types
-import type { Task, TaskCreate } from '~/types/api'
+import type { paths } from '~/types/api'
 
-const { createTasksItemApi } = useTasksApi()
+const { postTasksApi } = useTasksApi()
+
+type TaskCreate = paths['/api/tasks']['post']['requestBody']['content']['application/json']
+type Task = paths['/api/tasks']['post']['responses']['201']['content']['application/json']
 
 const newTask: TaskCreate = {
   title: 'New Task',
@@ -357,7 +444,7 @@ const newTask: TaskCreate = {
   status: 'pending'
 }
 
-const task: Task = await createTasksItemApi({
+const task: Task = await postTasksApi({
   body: newTask
 })
 ```
@@ -379,8 +466,8 @@ const tasks = await $fetch('/api/tasks', {
 
 **After:**
 ```typescript
-const { getTasksCollectionApi } = useTasksApi()
-const tasks = await getTasksCollectionApi()
+const { getTasksApi } = useTasksApi()
+const tasks = await getTasksApi()
 ```
 
 ## Troubleshooting
@@ -398,11 +485,23 @@ Make sure to:
 2. Check TypeScript config includes the output path
 3. Restart your IDE
 
-### Authentication not working
+### API prefix not working
 
-1. Verify cookie name matches your auth implementation
-2. Check the cookie contains a valid token
-3. Customize `getAuthHeader` if using different auth format
+1. Verify runtime config is set in `nuxt.config.ts`
+2. Check environment variable `NUXT_PUBLIC_API_PREFIX`
+3. Regenerate composables if you changed the CLI default
+4. Restart your Nuxt dev server
+
+### Requests going to wrong URL
+
+The final URL is: `apiPrefix + endpoint`
+
+Example:
+- API Prefix: `/api/symfony`
+- Endpoint: `/api/user-words`
+- Final URL: `/api/symfony/api/user-words`
+
+If your backend strips the prefix, adjust accordingly.
 
 ## Contributing
 

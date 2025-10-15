@@ -16,6 +16,10 @@ export interface GeneratorConfig {
   generateTypes?: boolean
   /** Output path for TypeScript types */
   typesOutputPath?: string
+  /** Import path for types in useOpenApi.ts (e.g., '~/types/api') */
+  typesImportPath?: string
+  /** Default API path prefix (e.g., '/api/symfony', can be overridden at runtime) */
+  apiPrefix?: string
 }
 
 /**

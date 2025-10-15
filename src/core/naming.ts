@@ -80,12 +80,12 @@ function toSingular(str: string): string {
 /**
  * Generate descriptive method name for an API endpoint
  * Examples:
- * - GET /api/user-words/user-words -> getUserWords
- * - POST /api/user-words/batch -> postUserWordsBatch
- * - GET /api/user-words/random -> getRandomUserWords
- * - GET /api/user-words/user-words/{id} -> getUserWord
- * - DELETE /api/user-words/user-words/{id} -> deleteUserWord
- * - GET /api/habits/{id}/streak -> getHabitStreak
+ * - GET /api/user-words/user-words -> getUserWordsApi
+ * - POST /api/user-words/batch -> postUserWordsBatchApi
+ * - GET /api/user-words/random -> getRandomUserWordsApi
+ * - GET /api/user-words/user-words/{id} -> getUserWordApi
+ * - DELETE /api/user-words/user-words/{id} -> deleteUserWordApi
+ * - GET /api/habits/{id}/streak -> getHabitStreakApi
  */
 export function generateMethodName(
   path: string,
@@ -93,7 +93,7 @@ export function generateMethodName(
   schema: OpenAPISchema
 ): string {
   const resourceName = getResourceName(path, schema)
-  if (!resourceName) return method
+  if (!resourceName) return method + 'Api'
 
   const baseName = toPascalCase(resourceName)
   
@@ -127,11 +127,11 @@ export function generateMethodName(
     // If there are modifiers after {id}, it's an action on the resource
     if (pathModifiers.length > 0) {
       const modifierPascal = pathModifiers.map(m => toPascalCase(m)).join('')
-      return `${method}${singularName}${modifierPascal}`
+      return `${method}${singularName}${modifierPascal}Api`
     }
     
     // Otherwise, it's a standard single resource operation
-    return `${method}${singularName}`
+    return `${method}${singularName}Api`
   }
   
   // Handle endpoints with custom parameters (not {id})
@@ -141,7 +141,7 @@ export function generateMethodName(
     if (paramMatch) {
       const paramName = paramMatch[1]
       const paramNamePascal = toPascalCase(paramName)
-      return `${method}${baseName}By${paramNamePascal}`
+      return `${method}${baseName}By${paramNamePascal}Api`
     }
   }
   
@@ -154,15 +154,15 @@ export function generateMethodName(
     // Let's use: get + Modifier + ResourceName pattern for GET
     // and: method + ResourceName + Modifier for others
     if (method === 'get') {
-      return `${method}${modifierPascal}${baseName}`
+      return `${method}${modifierPascal}${baseName}Api`
     } else {
-      return `${method}${baseName}${modifierPascal}`
+      return `${method}${baseName}${modifierPascal}Api`
     }
   }
   
   // Handle collection endpoints (no params, no modifiers)
   // These are base resource endpoints
-  return `${method}${baseName}`
+  return `${method}${baseName}Api`
 }
 
 /**
