@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.2.0...v1.3.0) (2025-10-15)
+
+
+### Features
+
+* remove outdated documentation files and enhance generator configuration ([e33b02d](https://github.com/Habityzer/nuxt-openapi-composables/commit/e33b02ddbed7fd85997da0d033af3fd631fc4782))
+
 # [1.2.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.1.0...v1.2.0) (2025-10-14)
 
 
