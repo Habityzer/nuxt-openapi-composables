@@ -139,14 +139,6 @@ nuxt-openapi-composables generate \
   --types-import '~/types/api'
 ```
 
-**With custom API prefix:**
-```bash
-nuxt-openapi-composables generate \
-  -s ./api.json \
-  -o ./composables/api \
-  --api-prefix '/api/symfony'
-```
-
 **Complete example:**
 ```bash
 nuxt-openapi-composables generate \
@@ -154,9 +146,10 @@ nuxt-openapi-composables generate \
   --output ./app/composables/api \
   --types \
   --types-output ./app/types/api.ts \
-  --types-import '~/types/api' \
-  --api-prefix '/api/v1'
+  --types-import '~/types/api'
 ```
+
+> **Note**: Configure your API prefix in `nuxt.config.ts` instead of passing `--api-prefix` via CLI. See [Configuration](#configuration) section.
 
 ## Generated Method Naming
 
@@ -227,9 +220,9 @@ await patchTaskApi({
 
 ### API Prefix Configuration
 
-The generated `useOpenApi.ts` reads the API prefix from Nuxt's runtime config. Configure it in your project:
+The generated `useOpenApi.ts` reads the API prefix from Nuxt's runtime config. 
 
-**Option 1: nuxt.config.ts**
+**Recommended: Configure in nuxt.config.ts**
 ```typescript
 export default defineNuxtConfig({
   runtimeConfig: {
@@ -240,19 +233,21 @@ export default defineNuxtConfig({
 })
 ```
 
-**Option 2: Environment Variable**
+**Alternative: Environment Variable**
 ```bash
 # .env
 NUXT_PUBLIC_API_PREFIX=/api/symfony
 ```
 
-**Option 3: Set Default During Generation**
+**Optional: Set a Hardcoded Default (CLI)**
 ```bash
 nuxt-openapi-composables generate \
   --api-prefix '/api/symfony'
 ```
 
-The priority is: Runtime Config > Environment Variable > CLI Default
+> **Note**: The `--api-prefix` CLI option is **optional** and only injects a hardcoded default into the generated code. If you're configuring the prefix in `nuxt.config.ts`, you don't need to pass it via CLI. The CLI option is mainly useful for non-Nuxt projects or as a fallback.
+
+**Priority Order**: Runtime Config > Environment Variable > CLI Default > Empty String
 
 ### Error Handling
 
@@ -318,7 +313,8 @@ export default defineNuxtConfig({
 {
   "scripts": {
     "update:schema": "curl https://api.example.com/openapi.json > schema/api.json",
-    "generate:api": "nuxt-openapi-composables generate -s ./schema/api.json --types",
+    "generate:types": "openapi-typescript ./schema/api.json -o ./types/api.ts",
+    "generate:api": "pnpm generate:types && nuxt-openapi-composables generate -s ./schema/api.json -o ./composables/api --types-import '~/types/api'",
     "sync:api": "pnpm update:schema && pnpm generate:api"
   }
 }
