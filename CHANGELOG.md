@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.3.0...v1.4.0) (2025-10-16)
+
+
+### Features
+
+* add picocolors dependency and enhance composable generation ([0631a2c](https://github.com/Habityzer/nuxt-openapi-composables/commit/0631a2c3fa86e1e0cd1c4121fe45521cec467354))
+
 # [1.3.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.2.0...v1.3.0) (2025-10-15)
 
 
