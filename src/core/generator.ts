@@ -1,10 +1,11 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { consola } from 'consola'
+import pc from 'picocolors'
 import type { GeneratorConfig, OpenAPISchema } from './types'
 import { toPascalCase } from './naming'
 import { extractResources } from './resource-parser'
-import { generateComposable } from './method-generator'
+import { generateComposableFromResources, getGeneratedMethods } from './method-generator'
 
 /**
  * Generate TypeScript types using openapi-typescript
@@ -130,7 +131,7 @@ function copyUseOpenApi(
     // Write to output directory
     const outputPath = join(outputDir, 'useOpenApi.ts')
     writeFileSync(outputPath, content, 'utf-8')
-    consola.success('✓ useOpenApi.ts')
+    consola.success('useOpenApi.ts')
   } catch (error) {
     consola.warn('✗ Failed to copy useOpenApi.ts:', error)
   }
@@ -191,33 +192,62 @@ export async function generateComposables(
     // Copy useOpenApi.ts to output directory
     copyUseOpenApi(config.outputDir, config.typesImportPath, config.apiPrefix)
 
-    // Generate composables for each resource
-    let generatedCount = 0
-    const totalResources = resources.size
-    let currentIndex = 0
-    
+    // Group resources by their normalized filename to avoid duplicates
+    const resourcesByFilename = new Map<string, string[]>()
     for (const resource of resources) {
-      currentIndex++
-      
-      const composable = generateComposable(
-        resource,
+      const fileName = `use${toPascalCase(resource)}Api.ts`
+      const existingResources = resourcesByFilename.get(fileName) || []
+      existingResources.push(resource)
+      resourcesByFilename.set(fileName, existingResources)
+    }
+
+    // Generate all composables
+    const generatedFiles: Array<{ fileName: string; methods: string[] }> = []
+    
+    for (const [fileName, resourceList] of resourcesByFilename) {
+      const composable = generateComposableFromResources(
+        resourceList,
         schema,
         config.useApiImportPath
       )
 
       if (composable) {
-        const fileName = `use${toPascalCase(resource)}Api.ts`
         const filePath = join(config.outputDir, fileName)
-        
         writeFileSync(filePath, composable, { flag: 'w' }) // Force overwrite
-        consola.success(`[${currentIndex}/${totalResources}] ✓ ${fileName}`)
-        generatedCount++
-      } else {
-        consola.warn(`[${currentIndex}/${totalResources}] ✗ No composable generated for ${resource}`)
+        
+        // Collect all methods from all resources that map to this file
+        const allMethods = new Set<string>()
+        for (const resource of resourceList) {
+          const methods = getGeneratedMethods(resource, schema)
+          methods.forEach((method) => {
+            allMethods.add(method.name)
+          })
+        }
+        
+        generatedFiles.push({
+          fileName,
+          methods: Array.from(allMethods)
+        })
       }
     }
 
-    consola.success(`Successfully generated ${generatedCount} composables`)
+    // Display results with tree-style formatting
+    consola.success(`Generated ${generatedFiles.length} composables:\n`)
+    
+    generatedFiles.forEach(({ fileName, methods }, fileIndex) => {
+      const isLast = fileIndex === generatedFiles.length - 1
+      const filePrefix = isLast ? '└──' : '├──'
+      
+      // Use console.log with picocolors for cyan file names
+      console.log(`${filePrefix} ${pc.cyan(fileName)}`)
+      
+      methods.forEach((method, methodIndex) => {
+        const isLastMethod = methodIndex === methods.length - 1
+        const methodPrefix = isLast ? '    ' : '│   '
+        const methodMarker = isLastMethod ? '└──' : '├──'
+        console.log(`${methodPrefix}${methodMarker} ${method}`)
+      })
+    })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     consola.error('Error generating composables:', errorMessage)

@@ -10,14 +10,28 @@ export function generateComposable(
   schema: OpenAPISchema,
   useApiImportPath?: string
 ): string {
-  const resourcePaths = getResourcePaths(resourceName, schema)
+  return generateComposableFromResources([resourceName], schema, useApiImportPath)
+}
 
-  if (resourcePaths.length === 0) return ''
+/**
+ * Generate a composable file from multiple resources (that normalize to the same filename)
+ */
+export function generateComposableFromResources(
+  resourceNames: string[],
+  schema: OpenAPISchema,
+  useApiImportPath?: string
+): string {
+  // Collect paths from all resources
+  const allResourcePaths = resourceNames.flatMap(resourceName => 
+    getResourcePaths(resourceName, schema)
+  )
+
+  if (allResourcePaths.length === 0) return ''
 
   // First pass: generate initial method names and detect duplicates
   const methodNames = new Map<string, string>()
 
-  resourcePaths.forEach(({ path, pathItem }) => {
+  allResourcePaths.forEach(({ path, pathItem }) => {
     const httpMethods = getHttpMethods(pathItem)
 
     httpMethods.forEach((method) => {
@@ -30,7 +44,7 @@ export function generateComposable(
   const finalMethodNames = ensureUniqueMethodNames(methodNames)
 
   // Generate method definitions
-  const methods = resourcePaths
+  const methods = allResourcePaths
     .map(({ path, pathItem }) => {
       const httpMethods = getHttpMethods(pathItem)
 
@@ -54,8 +68,8 @@ export function generateComposable(
     .map(methodName => `    ${methodName}`)
     .join(',\n')
 
-  // Use resource name as-is from the API
-  const composableName = toPascalCase(resourceName)
+  // Use the first resource name for the composable name
+  const composableName = toPascalCase(resourceNames[0])
 
   return `import { useOpenApi } from './useOpenApi'
 
