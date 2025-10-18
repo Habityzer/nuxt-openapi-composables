@@ -105,7 +105,7 @@ export const useOpenApi = () => {
 
     try {
       const prefix = getApiPrefix()
-      
+
       // Build the full URL with optional prefix
       let url = endpoint
       if (prefix) {
@@ -114,10 +114,26 @@ export const useOpenApi = () => {
         url = `${prefix}/${cleanEndpoint}`
       }
 
-      const response = await $fetch<T>(url, {
+      // Serialize query parameters manually to handle arrays with brackets
+      let finalUrl = url
+      if (query && Object.keys(query).length > 0) {
+        const searchParams = new URLSearchParams()
+        Object.entries(query).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach(v => searchParams.append(`${key}[]`, String(v)))
+          } else if (value !== undefined && value !== null) {
+            searchParams.append(key, String(value))
+          }
+        })
+        const queryString = searchParams.toString()
+        if (queryString) {
+          finalUrl = `${url}?${queryString}`
+        }
+      }
+
+      const response = await $fetch<T>(finalUrl, {
         method,
         body,
-        query,
         headers: {
           'Content-Type': headers['Content-Type'] || (method.toUpperCase() === 'PATCH' ? 'application/merge-patch+json' : 'application/json'),
           ...headers
@@ -137,7 +153,7 @@ export const useOpenApi = () => {
 
         // Log the error for debugging
         console.error(`API Error ${statusCode}:`, apiError.response._data)
-        
+
         // Throw error with status code and message
         throwError(statusCode, errorMessage)
       }

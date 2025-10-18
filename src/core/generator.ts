@@ -96,9 +96,9 @@ function copyUseOpenApi(
     // Add configuration comment at the top
     const configComment = `/**
  * API Configuration:
- * 
+ *
  * To configure the API prefix in your Nuxt project, add this to your nuxt.config.ts:
- * 
+ *
  * export default defineNuxtConfig({
  *   runtimeConfig: {
  *     public: {
@@ -106,15 +106,15 @@ function copyUseOpenApi(
  *     }
  *   }
  * })
- * 
+ *
  * Or use environment variable: NUXT_PUBLIC_API_PREFIX=/api/symfony
- * 
+ *
  * If not configured, defaults to: '${defaultApiPrefix || ''}'
- * 
+ *
  * Error Handling:
  * All API errors are thrown and can be caught by your application.
  * Errors include statusCode and statusMessage properties.
- * 
+ *
  * Example:
  * try {
  *   await getUserWords()
