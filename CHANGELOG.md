@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.0...v1.4.1) (2025-10-18)
+
+
+### Bug Fixes
+
+* **generator:** improve API configuration comments and query parameter handling ([936e3c3](https://github.com/Habityzer/nuxt-openapi-composables/commit/936e3c3aa0d81367fc97259b21bfd8303b759512))
+
 # [1.4.0](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.3.0...v1.4.0) (2025-10-16)
 
 
