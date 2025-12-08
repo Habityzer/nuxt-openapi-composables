@@ -113,13 +113,13 @@ function copyUseOpenApi(
  *
  * Error Handling:
  * All API errors are thrown and can be caught by your application.
- * Errors include statusCode and statusMessage properties.
+ * Errors include status and statusText properties (Nuxt 4.3+ / Web API naming).
  *
  * Example:
  * try {
  *   await getUserWords()
  * } catch (error) {
- *   if (error.statusCode === 401) {
+ *   if (error.status === 401) {
  *     // Handle authentication error (redirect to login, etc.)
  *   }
  * }

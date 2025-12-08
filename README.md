@@ -251,7 +251,7 @@ nuxt-openapi-composables generate \
 
 ### Error Handling
 
-All API errors are thrown with `statusCode` and `statusMessage` properties. Handle them in your application:
+All API errors are thrown with `status` and `statusText` properties (Nuxt 4.3+ / Web API naming). Handle them in your application:
 
 ```typescript
 const { getUserWordsApi } = useUserWordsApi()
@@ -259,15 +259,15 @@ const { getUserWordsApi } = useUserWordsApi()
 try {
   const words = await getUserWordsApi()
 } catch (error) {
-  if (error.statusCode === 401) {
+  if (error.status === 401) {
     // Handle authentication error
     await navigateTo('/login')
-  } else if (error.statusCode === 404) {
+  } else if (error.status === 404) {
     // Handle not found
     console.error('Resource not found')
   } else {
     // Handle other errors
-    console.error('API Error:', error.statusMessage)
+    console.error('API Error:', error.statusText)
   }
 }
 ```

@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.1...v1.4.2) (2025-12-08)
+
+
+### Bug Fixes
+
+* **useOpenApi:** enhance API configuration comments and improve error handling ([51a66f8](https://github.com/Habityzer/nuxt-openapi-composables/commit/51a66f8cf4ccf68462b9ddaab70645dc0a7f042c))
+
 ## [1.4.1](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.0...v1.4.1) (2025-10-18)
 
 

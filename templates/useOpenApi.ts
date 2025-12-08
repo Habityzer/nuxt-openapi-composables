@@ -17,13 +17,13 @@
  *
  * Error Handling:
  * All API errors are thrown and can be caught by your application.
- * Errors include statusCode and statusMessage properties.
+ * Errors include status and statusText properties (Nuxt 4.3+ / Web API naming).
  *
  * Example:
  * try {
  *   await getUserWords()
  * } catch (error) {
- *   if (error.statusCode === 401) {
+ *   if (error.status === 401) {
  *     // Handle authentication error (redirect to login, etc.)
  *   }
  * }
@@ -110,18 +110,19 @@ export const useOpenApi = () => {
     }
   }
 
-  // Helper to create errors (Nuxt-aware with fallback)
-  const throwError = (statusCode: number, statusMessage: string): never => {
+  // Helper to create errors (Nuxt-aware with fallback); uses status/statusText (Nuxt 4.3+)
+  const throwError = (status: number, statusText: string): never => {
     // Try to use Nuxt's createError if available, else fallback
     if (typeof createError === 'function') {
       throw createError({
-        statusCode,
-        statusMessage
+        status,
+        statusText
       })
     }
     // Fallback to standard Error if createError is not available
-    const error = new Error(statusMessage) as Error & { statusCode?: number }
-    error.statusCode = statusCode
+    const error = new Error(statusText) as Error & { status?: number, statusText?: string }
+    error.status = status
+    error.statusText = statusText
     throw error
   }
 
@@ -184,14 +185,14 @@ export const useOpenApi = () => {
       // Error handling - projects can catch and handle these errors as needed
       const apiError = error as ApiError
       if (apiError.response) {
-        const statusCode = apiError.response.status
+        const status = apiError.response.status
         const errorMessage = apiError.response._data?.message || 'API Error'
 
         // Log the error for debugging
-        console.error(`API Error ${statusCode}:`, apiError.response._data)
+        console.error(`API Error ${status}:`, apiError.response._data)
 
-        // Throw error with status code and message
-        return throwError(statusCode, errorMessage)
+        // Throw error with status and statusText
+        return throwError(status, errorMessage)
       }
 
       // Network or unknown error
