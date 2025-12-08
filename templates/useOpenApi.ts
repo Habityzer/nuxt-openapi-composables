@@ -1,3 +1,34 @@
+/**
+ * API Configuration:
+ *
+ * To configure the API prefix in your Nuxt project, add this to your nuxt.config.ts:
+ *
+ * export default defineNuxtConfig({
+ *   runtimeConfig: {
+ *     public: {
+ *       apiPrefix: '/api/symfony' // or your custom prefix
+ *     }
+ *   }
+ * })
+ *
+ * Or use environment variable: NUXT_PUBLIC_API_PREFIX=/api/symfony
+ *
+ * If not configured, defaults to: '/api/symfony'
+ *
+ * Error Handling:
+ * All API errors are thrown and can be caught by your application.
+ * Errors include statusCode and statusMessage properties.
+ *
+ * Example:
+ * try {
+ *   await getUserWords()
+ * } catch (error) {
+ *   if (error.statusCode === 401) {
+ *     // Handle authentication error (redirect to login, etc.)
+ *   }
+ * }
+ */
+
 import type { paths } from '~/types/api'
 
 // Helper types to extract response types from OpenAPI paths
@@ -66,29 +97,32 @@ export const useOpenApi = () => {
   const getApiPrefix = (): string => {
     try {
       const config = useRuntimeConfig()
-      // Use public.apiPrefix from nuxt.config.ts or environment variable
-      // Falls back to empty string if not configured
-      return config.public.apiPrefix || ''
+      // Use public.apiPrefix from nuxt.config.ts or fallback to '/api/symfony'
+      // Ensure we always return a string to avoid TS error
+      const prefix = config?.public?.apiPrefix
+      if (typeof prefix === 'string' && prefix.length > 0) {
+        return prefix
+      }
+      return '/api/symfony'
     } catch {
-      // Fallback if runtime config is not available
-      return ''
+      // Fallback if config is not available
+      return '/api/symfony'
     }
   }
 
   // Helper to create errors (Nuxt-aware with fallback)
   const throwError = (statusCode: number, statusMessage: string): never => {
-    try {
-      // Try to use Nuxt's createError if available
+    // Try to use Nuxt's createError if available, else fallback
+    if (typeof createError === 'function') {
       throw createError({
         statusCode,
         statusMessage
       })
-    } catch {
-      // Fallback to standard Error if createError is not available
-      const error = new Error(statusMessage) as Error & { statusCode?: number }
-      error.statusCode = statusCode
-      throw error
     }
+    // Fallback to standard Error if createError is not available
+    const error = new Error(statusMessage) as Error & { statusCode?: number }
+    error.statusCode = statusCode
+    throw error
   }
 
   // Main API call function - now uses Nuxt proxy
@@ -127,7 +161,9 @@ export const useOpenApi = () => {
         })
         const queryString = searchParams.toString()
         if (queryString) {
-          finalUrl = `${url}?${queryString}`
+          // Check if URL already has query parameters
+          const separator = url.includes('?') ? '&' : '?'
+          finalUrl = `${url}${separator}${queryString}`
         }
       }
 
@@ -155,12 +191,12 @@ export const useOpenApi = () => {
         console.error(`API Error ${statusCode}:`, apiError.response._data)
 
         // Throw error with status code and message
-        throwError(statusCode, errorMessage)
+        return throwError(statusCode, errorMessage)
       }
 
       // Network or unknown error
       console.error('API Call failed:', error)
-      throwError(500, 'Network Error')
+      return throwError(500, 'Network Error')
     }
   }
 
