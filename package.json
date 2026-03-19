@@ -45,9 +45,9 @@
     "release": "pnpm build && pnpm test && HUSKY=0 semantic-release"
   },
   "dependencies": {
-    "commander": "^12.0.0",
-    "consola": "^3.2.3",
-    "openapi-typescript": "^7.9.1",
+    "commander": "^12.1.0",
+    "consola": "^3.4.2",
+    "openapi-typescript": "^7.13.0",
     "pathe": "^1.1.2",
     "picocolors": "^1.1.1"
   },
@@ -60,16 +60,16 @@
     }
   },
   "devDependencies": {
-    "@nuxt/kit": "^3.14.0",
+    "@nuxt/kit": "^4.4.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^14.1.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.19.15",
     "@vitest/coverage-v8": "^3.2.4",
-    "conventional-changelog-conventionalcommits": "^9.1.0",
+    "conventional-changelog-conventionalcommits": "^9.3.0",
     "semantic-release": "^24.2.9",
-    "tsup": "^8.0.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
