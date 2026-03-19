@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.2...v1.4.3) (2026-03-19)
+
+
+### Bug Fixes
+
+* update error handling in API documentation and implementation to use `status` and `statusText` properties for consistency with Nuxt 4.3+ ([c649505](https://github.com/Habityzer/nuxt-openapi-composables/commit/c6495058a19964064e64cabcb583e970e2854346))
+
 ## [1.4.2](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.1...v1.4.2) (2025-12-08)
 
 
