@@ -41,8 +41,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "pnpm build && pnpm test",
-    "release": "pnpm build && pnpm test && HUSKY=0 semantic-release"
+    "prepublishOnly": "pnpm build && pnpm test"
   },
   "dependencies": {
     "commander": "^13.0.0",
@@ -61,14 +60,8 @@
   },
   "devDependencies": {
     "@nuxt/kit": "^4.4.2",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/node": "^22.19.15",
     "@vitest/coverage-v8": "^4.1.0",
-    "conventional-changelog-conventionalcommits": "^9.3.0",
-    "semantic-release": "^24.2.9",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"

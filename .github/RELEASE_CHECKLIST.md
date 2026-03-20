@@ -11,12 +11,14 @@
 ## Release Command
 
 ```bash
-pnpm release
+# Push commits to a release branch; GitHub Actions will publish via
+# semantic-release.
+git push origin HEAD
 ```
 
 ## What Happens Automatically
 
-1. ✅ Analyzes your commits since the last release
+1. ✅ GitHub Actions analyzes your commits since the last release
 2. ✅ Determines the next version (patch/minor/major)
 3. ✅ Updates `package.json` with new version
 4. ✅ Generates/updates `CHANGELOG.md`
