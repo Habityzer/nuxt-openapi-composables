@@ -21,8 +21,8 @@ importers:
         specifier: ^7.13.0
         version: 7.13.0(typescript@5.9.3)
       pathe:
-        specifier: ^1.1.2
-        version: 1.1.2
+        specifier: ^2.0.0
+        version: 2.0.3
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
