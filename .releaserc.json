@@ -1,5 +1,5 @@
 {
-  "branches": ["master"],
+  "branches": ["main", "master"],
   "repositoryUrl": "git@github.com:Habityzer/nuxt-openapi-composables.git",
   "plugins": [
     [
@@ -40,7 +40,6 @@
       }
     ]
   ],
-  "dryRun": false,
-  "ci": false
+  "dryRun": false
 }
 
