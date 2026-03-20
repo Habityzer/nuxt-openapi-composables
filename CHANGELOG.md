@@ -1,3 +1,11 @@
+## [1.4.5](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.4...v1.4.5) (2026-03-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v14 ([90b8815](https://github.com/Habityzer/nuxt-openapi-composables/commit/90b8815777eed4d7d889d9ca7e4f1a18b6033197))
+* **deps:** update dependency pathe to v2 ([6403823](https://github.com/Habityzer/nuxt-openapi-composables/commit/64038236f067bdb307344a91f468e0995e0e43d8))
+
 ## [1.4.4](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.3...v1.4.4) (2026-03-20)
 
 ## [1.4.3](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.2...v1.4.3) (2026-03-19)
