@@ -1,3 +1,5 @@
+## [1.4.6](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.5...v1.4.6) (2026-03-25)
+
 ## [1.4.5](https://github.com/Habityzer/nuxt-openapi-composables/compare/v1.4.4...v1.4.5) (2026-03-20)
 
 
